@@ -169,6 +169,7 @@ export class MediaRequest {
       .leftJoin('request.media', 'media')
       .leftJoinAndSelect('request.requestedBy', 'user')
       .where('request.is4k = :is4k', { is4k: requestBody.is4k })
+      .andWhere('request.isAnime = :isAnime', { isAnime: requestBody.isAnime })
       .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
       .andWhere('media.mediaType = :mediaType', {
         mediaType: requestBody.mediaType,
@@ -186,6 +187,7 @@ export class MediaRequest {
           tmdbId: tmdbMedia.id,
           mediaType: requestBody.mediaType,
           is4k: requestBody.is4k,
+          isAnime: requestBody.isAnime,
           label: 'Media Request',
         });
 
@@ -372,6 +374,7 @@ export class MediaRequest {
           ? user
           : undefined,
         is4k: requestBody.is4k,
+        isAnime: requestBody.isAnime,
         serverId: requestBody.serverId,
         profileId: profileId,
         rootFolder: rootFolder,
@@ -405,6 +408,7 @@ export class MediaRequest {
           .filter(
             (request) =>
               request.is4k === requestBody.is4k &&
+              request.isAnime === requestBody.isAnime &&
               request.status !== MediaRequestStatus.DECLINED &&
               request.status !== MediaRequestStatus.COMPLETED
           )
@@ -482,6 +486,7 @@ export class MediaRequest {
           ? user
           : undefined,
         is4k: requestBody.is4k,
+        isAnime: requestBody.isAnime,
         serverId: requestBody.serverId,
         profileId: profileId,
         rootFolder: rootFolder,
@@ -569,6 +574,9 @@ export class MediaRequest {
 
   @Column({ default: false })
   public is4k: boolean;
+
+  @Column({ default: false })
+  public isAnime: boolean;
 
   @Column({ nullable: true })
   public serverId: number;
@@ -782,7 +790,10 @@ export class MediaRequest {
         }
 
         let radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && radarr.is4k === this.is4k
+          (radarr) =>
+            radarr.isDefault &&
+            radarr.is4k === this.is4k &&
+            radarr.isAnime === this.isAnime
         );
 
         // Fallback for requesting anime if there is no default anime server
@@ -814,9 +825,9 @@ export class MediaRequest {
         if (!radarrSettings) {
           logger.warn(
             `There is no default ${
-              this.is4k ? '4K ' : ''
+              this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
             }Radarr server configured. Did you set any of your ${
-              this.is4k ? '4K ' : ''
+              this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
             }Radarr servers as default?`,
             {
               label: 'Media Request',
@@ -1039,7 +1050,10 @@ export class MediaRequest {
         }
 
         let sonarrSettings = settings.sonarr.find(
-          (sonarr) => sonarr.isDefault && sonarr.is4k === this.is4k
+          (sonarr) =>
+            sonarr.isDefault &&
+            sonarr.is4k === this.is4k &&
+            sonarr.isAnime == this.isAnime
         );
 
         // Fallback for requesting anime if there is no default anime server
@@ -1071,9 +1085,9 @@ export class MediaRequest {
         if (!sonarrSettings) {
           logger.warn(
             `There is no default ${
-              this.is4k ? '4K ' : ''
+              this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
             }Sonarr server configured. Did you set any of your ${
-              this.is4k ? '4K ' : ''
+              this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
             }Sonarr servers as default?`,
             {
               label: 'Media Request',
@@ -1127,11 +1141,7 @@ export class MediaRequest {
         let seriesType: SonarrSeries['seriesType'] = 'standard';
 
         // Change series type to anime if the anime keyword is present on tmdb
-        if (
-          series.keywords.results.some(
-            (keyword) => keyword.id === ANIME_KEYWORD_ID
-          )
-        ) {
+        if (this.isAnime) {
           seriesType = sonarrSettings.animeSeriesType ?? 'anime';
         }
 
@@ -1333,30 +1343,38 @@ export class MediaRequest {
 
       switch (type) {
         case Notification.MEDIA_APPROVED:
-          event = `${this.is4k ? '4K ' : ''}${mediaType} Request Approved`;
+          event = `${
+            this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
+          }${mediaType} Request Approved`;
           notifyAdmin = false;
           break;
         case Notification.MEDIA_DECLINED:
-          event = `${this.is4k ? '4K ' : ''}${mediaType} Request Declined`;
+          event = `${
+            this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
+          }${mediaType} Request Declined`;
           notifyAdmin = false;
           break;
         case Notification.MEDIA_PENDING:
-          event = `New ${this.is4k ? '4K ' : ''}${mediaType} Request`;
+          event = `New ${
+            this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
+          }${mediaType} Request`;
           break;
         case Notification.MEDIA_AUTO_REQUESTED:
           event = `${
-            this.is4k ? '4K ' : ''
+            this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
           }${mediaType} Request Automatically Submitted`;
           notifyAdmin = false;
           notifySystem = false;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
           event = `${
-            this.is4k ? '4K ' : ''
+            this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
           }${mediaType} Request Automatically Approved`;
           break;
         case Notification.MEDIA_FAILED:
-          event = `${this.is4k ? '4K ' : ''}${mediaType} Request Failed`;
+          event = `${
+            this.isAnime ? 'Anime ' : this.is4k ? '4K ' : ''
+          }${mediaType} Request Failed`;
           break;
       }
 
