@@ -95,6 +95,10 @@ const TvRequestModal = ({
       : null
   );
 
+  const isAnime = data?.keywords.some(
+    (keyword) => keyword.id === ANIME_KEYWORD_ID
+  );
+
   const currentlyRemaining =
     (quota?.tv.remaining ?? 0) -
     selectedSeasons.length +
@@ -199,6 +203,7 @@ const TvRequestModal = ({
         tvdbId: tvdbId ?? data?.externalIds.tvdbId,
         mediaType: 'tv',
         is4k,
+        isAnime,
         seasons: settings.currentSettings.partialRequestsEnabled
           ? selectedSeasons.sort((a, b) => a - b)
           : getAllSeasons().filter(
@@ -723,9 +728,7 @@ const TvRequestModal = ({
         <AdvancedRequester
           type="tv"
           is4k={is4k}
-          isAnime={data?.keywords.some(
-            (keyword) => keyword.id === ANIME_KEYWORD_ID
-          )}
+          isAnime={isAnime}
           onChange={(overrides) => setRequestOverrides(overrides)}
           requestUser={editRequest?.requestedBy}
           defaultOverrides={
