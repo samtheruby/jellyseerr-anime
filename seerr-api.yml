@@ -589,6 +589,9 @@ components:
         is4k:
           type: boolean
           example: false
+        isAnime:
+          type: boolean
+          example: false
         minimumAvailability:
           type: string
           example: 'In Cinema'
@@ -614,6 +617,7 @@ components:
         - activeProfileName
         - activeDirectory
         - is4k
+        - isAnime
         - minimumAvailability
         - isDefault
     SonarrSettings:
@@ -668,6 +672,9 @@ components:
         is4k:
           type: boolean
           example: false
+        isAnime:
+          type: boolean
+          example: false
         enableSeasonFolders:
           type: boolean
           example: false
@@ -693,6 +700,7 @@ components:
         - activeProfileName
         - activeDirectory
         - is4k
+        - isAnime
         - enableSeasonFolders
         - isDefault
     ServarrTag:
@@ -1255,6 +1263,9 @@ components:
             - type: string
               nullable: true
         is4k:
+          type: boolean
+          example: false
+        isAnime:
           type: boolean
           example: false
         serverId:
@@ -6317,6 +6328,9 @@ paths:
                 is4k:
                   type: boolean
                   example: false
+                isAnime:
+                  type: boolean
+                  example: false
                 serverId:
                   type: number
                 profileId:
@@ -6421,6 +6435,9 @@ paths:
                     type: number
                     minimum: 0
                 is4k:
+                  type: boolean
+                  example: false
+                isAnime:
                   type: boolean
                   example: false
                 serverId:
@@ -7101,6 +7118,9 @@ paths:
                     When true, updates the 4K status field (status4k).
                     When false or not provided, updates the regular status field (status).
                     This applies to all status values (available, partial, processing, pending, unknown).
+                isAnime:
+                  type: boolean
+                  example: false
       responses:
         '200':
           description: Returned media
