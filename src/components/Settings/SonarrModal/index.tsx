@@ -103,9 +103,13 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     name: Yup.string().required(
       intl.formatMessage(messages.validationNameRequired)
     ),
-    hostname: Yup.string().required(
-      intl.formatMessage(messages.validationHostnameRequired)
-    ),
+    isAnime: Yup.boolean(),
+    hostname: Yup.string()
+      .required(intl.formatMessage(messages.validationHostnameRequired))
+      .matches(
+        /^(((([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])):((([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))@)?(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        intl.formatMessage(messages.validationHostnameRequired)
+      ),
     port: Yup.number()
       .nullable()
       .required(intl.formatMessage(messages.validationPortRequired)),
@@ -123,6 +127,24 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
           intl.formatMessage(messages.validationLanguageProfileRequired)
         )
       : Yup.number(),
+    activeAnimeRootFolder: Yup.string().when('isAnime', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationRootFolderRequired)
+      ),
+    }),
+    activeAnimeProfileId: Yup.string().when('isAnime', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationProfileRequired)
+      ),
+    }),
+    activeAnimeLanguageProfileId: Yup.string().when('isAnime', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationLanguageProfileRequired)
+      ),
+    }),
     externalUrl: Yup.string()
       .test(
         'valid-url',
@@ -242,6 +264,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
           animeTags: sonarr?.animeTags ?? [],
           isDefault: sonarr?.isDefault ?? false,
           is4k: sonarr?.is4k ?? false,
+          isAnime: Boolean(sonarr?.activeAnimeProfileId) ?? false,
           enableSeasonFolders: sonarr?.enableSeasonFolders ?? false,
           externalUrl: sonarr?.externalUrl,
           syncEnabled: sonarr?.syncEnabled ?? false,
@@ -767,6 +790,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="activeAnimeProfileId" className="text-label">
                     {intl.formatMessage(messages.animequalityprofile)}
+                    <span className="label-required">
+                      {values.isAnime ? '*' : ''}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <div className="form-input-field">
@@ -807,6 +833,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="activeAnimeRootFolder" className="text-label">
                     {intl.formatMessage(messages.animerootfolder)}
+                    <span className="label-required">
+                      {values.isAnime ? '*' : ''}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <div className="form-input-field">
@@ -836,7 +865,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                     </div>
                     {errors.activeAnimeRootFolder &&
                       touched.activeAnimeRootFolder && (
-                        <div className="error">{errors.rootFolder}</div>
+                        <div className="error">
+                          {errors.activeAnimeRootFolder}
+                        </div>
                       )}
                   </div>
                 </div>
@@ -847,6 +878,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       className="text-label"
                     >
                       {intl.formatMessage(messages.animelanguageprofile)}
+                      <span className="label-required">
+                        {values.isAnime ? '*' : ''}
+                      </span>
                     </label>
                     <div className="form-input-area">
                       <div className="form-input-field">
