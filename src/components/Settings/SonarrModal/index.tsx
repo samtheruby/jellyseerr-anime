@@ -1,10 +1,12 @@
 import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import type { SonarrTestResponse } from '@app/components/Settings/SettingsServices';
+import useSettings from '@app/hooks/useSettings';
 import globalMessages from '@app/i18n/globalMessages';
 import defineMessages from '@app/utils/defineMessages';
 import { isValidURL } from '@app/utils/urlValidationHelper';
 import { Transition } from '@headlessui/react';
+import { MediaServerType } from '@server/constants/server';
 import type { SonarrSettings } from '@server/lib/settings';
 import { useSettings } from '@app/hooks/useSettings';
 import { MediaServerType } from '@server/constants/server';
@@ -107,6 +109,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     languageProfiles: null,
     tags: [],
   });
+  const settings = useSettings();
 
   const SonarrSettingsSchema = Yup.object().shape({
     name: Yup.string().required(
