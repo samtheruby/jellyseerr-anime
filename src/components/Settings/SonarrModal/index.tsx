@@ -6,6 +6,8 @@ import defineMessages from '@app/utils/defineMessages';
 import { isValidURL } from '@app/utils/urlValidationHelper';
 import { Transition } from '@headlessui/react';
 import type { SonarrSettings } from '@server/lib/settings';
+import { useSettings } from '@app/hooks/useSettings';
+import { MediaServerType } from '@server/constants/server';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -96,6 +98,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
   const intl = useIntl();
   const initialLoad = useRef(false);
   const { addToast } = useToasts();
+  const { currentSettings } = useSettings();
   const [isValidated, setIsValidated] = useState(sonarr ? true : false);
   const [isTesting, setIsTesting] = useState(false);
   const [testResponse, setTestResponse] = useState<SonarrTestResponse>({
@@ -1027,9 +1030,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                     {intl.formatMessage(messages.seasonfolders)}
                   </label>
                   <div
-                    className={`form-input-area ${settings.currentSettings.mediaServerType ===
+                    className={`form-input-area ${currentSettings.mediaServerType ===
                         MediaServerType.JELLYFIN ||
-                        settings.currentSettings.mediaServerType ===
+                        currentSettings.mediaServerType ===
                         MediaServerType.EMBY
                         ? 'opacity-50'
                         : 'opacity-100'
