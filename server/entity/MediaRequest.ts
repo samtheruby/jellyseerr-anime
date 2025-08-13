@@ -624,22 +624,6 @@ export class MediaRequest {
   @Column({ default: false })
   public isAutoRequest: boolean;
 
-  public get isAnime(): boolean {
-    // This checks if the media has anime content based on the anime series type or other criteria
-    // In this context, we can check if anime-specific fields are used for this request
-    const settings = getSettings();
-    const sonarrSettings = settings.sonarr.find(
-      (sonarr) => sonarr.isDefault && sonarr.is4k === this.is4k
-    );
-    
-    return Boolean(
-      sonarrSettings?.animeSeriesType === 'anime' &&
-      this.type === MediaType.TV && 
-      (sonarrSettings.activeAnimeDirectory || 
-       sonarrSettings.activeAnimeProfileId ||
-       sonarrSettings.activeAnimeLanguageProfileId)
-    );
-  }
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
