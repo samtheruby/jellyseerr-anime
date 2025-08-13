@@ -105,7 +105,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     languageProfiles: null,
     tags: [],
   });
-  const settings = useSettings();
 
   const SonarrSettingsSchema = Yup.object().shape({
     name: Yup.string().required(
@@ -147,11 +146,13 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
         intl.formatMessage(messages.validationProfileRequired)
       ),
     }),
-    activeAnimeLanguageProfileId: Yup.string().when('isAnime', {
+    activeAnimeLanguageProfileId: Yup.number().when('isAnime', {
       is: true,
-      then: Yup.string().required(
-        intl.formatMessage(messages.validationLanguageProfileRequired)
-      ),
+      then: testResponse.languageProfiles
+        ? Yup.number().required(
+            intl.formatMessage(messages.validationLanguageProfileRequired)
+          )
+        : Yup.number(),
     }),
     externalUrl: Yup.string()
       .test(
