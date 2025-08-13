@@ -19,7 +19,7 @@ serviceRoutes.get('/radarr', async (req, res) => {
       id: radarr.id,
       name: radarr.name,
       is4k: radarr.is4k,
-      isAnime: radarr.isAnime,
+      isAnime: radarr.isAnime ?? false,
       isDefault: radarr.isDefault,
       activeDirectory: radarr.activeDirectory,
       activeProfileId: radarr.activeProfileId,
@@ -89,7 +89,7 @@ serviceRoutes.get('/sonarr', async (req, res) => {
       id: sonarr.id,
       name: sonarr.name,
       is4k: sonarr.is4k,
-      isAnime: sonarr.isAnime,
+      isAnime: sonarr.isAnime ?? false,
       isDefault: sonarr.isDefault,
       activeDirectory: sonarr.activeDirectory,
       activeProfileId: sonarr.activeProfileId,
@@ -97,7 +97,7 @@ serviceRoutes.get('/sonarr', async (req, res) => {
       activeAnimeDirectory: sonarr.activeAnimeDirectory,
       activeLanguageProfileId: sonarr.activeLanguageProfileId,
       activeAnimeLanguageProfileId: sonarr.activeAnimeLanguageProfileId,
-      activeTags: [],
+      activeTags: sonarr.tags ?? [],
     })
   );
 
