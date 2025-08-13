@@ -78,6 +78,7 @@ export interface DVRSettings {
   tags: number[];
   is4k: boolean;
   isDefault: boolean;
+  isAnime?: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
   preventSearch: boolean;
