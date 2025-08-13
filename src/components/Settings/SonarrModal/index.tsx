@@ -8,8 +8,6 @@ import { isValidURL } from '@app/utils/urlValidationHelper';
 import { Transition } from '@headlessui/react';
 import { MediaServerType } from '@server/constants/server';
 import type { SonarrSettings } from '@server/lib/settings';
-import { useSettings } from '@app/hooks/useSettings';
-import { MediaServerType } from '@server/constants/server';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { useCallback, useEffect, useRef, useState } from 'react';
