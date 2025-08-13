@@ -224,6 +224,7 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
             return {
               ...r,
               profileName,
+              isAnime: r.isAnime,
             };
           }
           case MediaType.TV: {
@@ -232,6 +233,7 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
               profileName: sonarrServers
                 .find((serverr) => serverr.id === r.serverId)
                 ?.profiles?.find((profile) => profile.id === r.profileId)?.name,
+              isAnime: r.isAnime,
             };
           }
         }
