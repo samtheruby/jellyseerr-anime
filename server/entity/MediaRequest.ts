@@ -218,12 +218,33 @@ export class MediaRequest {
     let tags = requestBody.tags;
 
     if (useOverrides) {
-      const defaultRadarrId = requestBody.is4k
-        ? settings.radarr.findIndex((r) => r.is4k && r.isDefault)
-        : settings.radarr.findIndex((r) => !r.is4k && r.isDefault);
-      const defaultSonarrId = requestBody.is4k
-        ? settings.sonarr.findIndex((s) => s.is4k && s.isDefault)
-        : settings.sonarr.findIndex((s) => !s.is4k && s.isDefault);
+      let defaultRadarrId = requestBody.is4k
+        ? settings.radarr.findIndex(
+            (r) => r.is4k && r.isDefault && r.isAnime === requestBody.isAnime
+          )
+        : settings.radarr.findIndex(
+            (r) => !r.is4k && r.isDefault && r.isAnime === requestBody.isAnime
+          );
+      // Fallback for requesting anime if there is no default anime server
+      if (defaultRadarrId === -1 && requestBody.isAnime) {
+        defaultRadarrId = requestBody.is4k
+          ? settings.radarr.findIndex((r) => r.is4k && r.isDefault)
+          : settings.radarr.findIndex((r) => !r.is4k && r.isDefault);
+      }
+
+      let defaultSonarrId = requestBody.is4k
+        ? settings.sonarr.findIndex(
+            (s) => s.is4k && s.isDefault && s.isAnime === requestBody.isAnime
+          )
+        : settings.sonarr.findIndex(
+            (s) => !s.is4k && s.isDefault && s.isAnime === requestBody.isAnime
+          );
+      // Fallback for requesting anime if there is no default anime server
+      if (defaultSonarrId === -1 && requestBody.isAnime) {
+        defaultSonarrId = requestBody.is4k
+          ? settings.sonarr.findIndex((s) => s.is4k && s.isDefault)
+          : settings.sonarr.findIndex((s) => !s.is4k && s.isDefault);
+      }
 
       const overrideRuleRepository = getRepository(OverrideRule);
       const overrideRules = await overrideRuleRepository.find({

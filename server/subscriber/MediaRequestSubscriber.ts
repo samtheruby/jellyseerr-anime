@@ -192,8 +192,18 @@ export class MediaRequestSubscriber
         }
 
         let radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && radarr.is4k === entity.is4k
+          (radarr) =>
+            radarr.isDefault &&
+            radarr.is4k === entity.is4k &&
+            radarr.isAnime === entity.isAnime
         );
+
+        // Fallback for requesting anime if there is no default anime server
+        if (!radarrSettings && entity.isAnime) {
+          radarrSettings = settings.radarr.find(
+            (radarr) => radarr.isDefault && radarr.is4k === entity.is4k
+          );
+        }
 
         if (
           entity.serverId !== null &&
@@ -452,8 +462,18 @@ export class MediaRequestSubscriber
         }
 
         let sonarrSettings = settings.sonarr.find(
-          (sonarr) => sonarr.isDefault && sonarr.is4k === entity.is4k
+          (sonarr) =>
+            sonarr.isDefault &&
+            sonarr.is4k === entity.is4k &&
+            sonarr.isAnime === entity.isAnime
         );
+
+        // Fallback for requesting anime if there is no default anime server
+        if (!sonarrSettings && entity.isAnime) {
+          sonarrSettings = settings.sonarr.find(
+            (sonarr) => sonarr.isDefault && sonarr.is4k === entity.is4k
+          );
+        }
 
         if (
           entity.serverId !== null &&
