@@ -1058,7 +1058,7 @@ export class MediaRequest {
           (sonarr) =>
             sonarr.isDefault &&
             sonarr.is4k === this.is4k &&
-            sonarr.isAnime == this.isAnime
+            sonarr.isAnime === this.isAnime
         );
 
         // Fallback for requesting anime if there is no default anime server
