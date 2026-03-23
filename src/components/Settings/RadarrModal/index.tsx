@@ -177,7 +177,7 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
             autoDismiss: true,
           });
         }
-      } catch (e) {
+      } catch {
         setIsValidated(false);
         if (initialLoad.current) {
           addToast(intl.formatMessage(messages.toastRadarrTestFailure), {
@@ -274,7 +274,7 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
             }
 
             onSave();
-          } catch (e) {
+          } catch {
             // set error here
           }
         }}
@@ -296,8 +296,8 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                 isSubmitting
                   ? intl.formatMessage(globalMessages.saving)
                   : radarr
-                  ? intl.formatMessage(globalMessages.save)
-                  : intl.formatMessage(messages.add)
+                    ? intl.formatMessage(globalMessages.save)
+                    : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
               secondaryText={
@@ -540,20 +540,29 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                           {isTesting
                             ? intl.formatMessage(messages.loadingprofiles)
                             : !isValidated
-                            ? intl.formatMessage(
-                                messages.testFirstQualityProfiles
-                              )
-                            : intl.formatMessage(messages.selectQualityProfile)}
+                              ? intl.formatMessage(
+                                  messages.testFirstQualityProfiles
+                                )
+                              : intl.formatMessage(
+                                  messages.selectQualityProfile
+                                )}
                         </option>
                         {testResponse.profiles.length > 0 &&
-                          testResponse.profiles.map((profile) => (
-                            <option
-                              key={`loaded-profile-${profile.id}`}
-                              value={profile.id}
-                            >
-                              {profile.name}
-                            </option>
-                          ))}
+                          testResponse.profiles
+                            .toSorted((a, b) =>
+                              a.name.localeCompare(b.name, intl.locale, {
+                                numeric: true,
+                                sensitivity: 'base',
+                              })
+                            )
+                            .map((profile) => (
+                              <option
+                                key={`loaded-profile-${profile.id}`}
+                                value={profile.id}
+                              >
+                                {profile.name}
+                              </option>
+                            ))}
                       </Field>
                     </div>
                     {errors.activeProfileId &&
@@ -580,8 +589,10 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                           {isTesting
                             ? intl.formatMessage(messages.loadingrootfolders)
                             : !isValidated
-                            ? intl.formatMessage(messages.testFirstRootFolders)
-                            : intl.formatMessage(messages.selectRootFolder)}
+                              ? intl.formatMessage(
+                                  messages.testFirstRootFolders
+                                )
+                              : intl.formatMessage(messages.selectRootFolder)}
                         </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
@@ -652,8 +663,8 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                         !isValidated
                           ? intl.formatMessage(messages.testFirstTags)
                           : isTesting
-                          ? intl.formatMessage(messages.loadingTags)
-                          : intl.formatMessage(messages.selecttags)
+                            ? intl.formatMessage(messages.loadingTags)
+                            : intl.formatMessage(messages.selecttags)
                       }
                       className="react-select-container"
                       classNamePrefix="react-select"
