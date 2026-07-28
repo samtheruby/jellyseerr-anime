@@ -1,6 +1,7 @@
 import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import type { RadarrTestResponse } from '@app/components/Settings/SettingsServices';
+import useToasts from '@app/hooks/useToasts';
 import globalMessages from '@app/i18n/globalMessages';
 import defineMessages from '@app/utils/defineMessages';
 import { isValidURL } from '@app/utils/urlValidationHelper';
@@ -11,7 +12,6 @@ import { Field, Formik } from 'formik';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import Select from 'react-select';
-import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 
 type OptionType = {
@@ -345,15 +345,15 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                       values.isAnime
                         ? messages.createAnimeradarr
                         : values.is4k
-                        ? messages.create4kradarr
-                        : messages.createradarr
+                          ? messages.create4kradarr
+                          : messages.createradarr
                     )
                   : intl.formatMessage(
                       values.isAnime
                         ? messages.editAnimeradarr
                         : values.is4k
-                        ? messages.edit4kradarr
-                        : messages.editradarr
+                          ? messages.edit4kradarr
+                          : messages.editradarr
                     )
               }
             >
@@ -364,8 +364,8 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                       values.isAnime
                         ? messages.defaultAnimeserver
                         : values.is4k
-                        ? messages.default4kserver
-                        : messages.defaultserver
+                          ? messages.default4kserver
+                          : messages.defaultserver
                     )}
                   </label>
                   <div className="form-input-area">

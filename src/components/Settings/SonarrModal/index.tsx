@@ -2,6 +2,7 @@ import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import type { SonarrTestResponse } from '@app/components/Settings/SettingsServices';
 import useSettings from '@app/hooks/useSettings';
+import useToasts from '@app/hooks/useToasts';
 import globalMessages from '@app/i18n/globalMessages';
 import defineMessages from '@app/utils/defineMessages';
 import { isValidURL } from '@app/utils/urlValidationHelper';
@@ -14,7 +15,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import type { OnChangeValue } from 'react-select';
 import Select from 'react-select';
-import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 
 type OptionType = {
@@ -150,23 +150,26 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
       : Yup.number(),
     activeAnimeRootFolder: Yup.string().when('isAnime', {
       is: true,
-      then: Yup.string().required(
-        intl.formatMessage(messages.validationRootFolderRequired)
-      ),
+      then: (schema) =>
+        schema.required(
+          intl.formatMessage(messages.validationRootFolderRequired)
+        ),
     }),
     activeAnimeProfileId: Yup.string().when('isAnime', {
       is: true,
-      then: Yup.string().required(
-        intl.formatMessage(messages.validationProfileRequired)
-      ),
+      then: (schema) =>
+        schema.required(
+          intl.formatMessage(messages.validationProfileRequired)
+        ),
     }),
     activeAnimeLanguageProfileId: Yup.number().when('isAnime', {
       is: true,
-      then: testResponse.languageProfiles
-        ? Yup.number().required(
-            intl.formatMessage(messages.validationLanguageProfileRequired)
-          )
-        : Yup.number(),
+      then: (schema) =>
+        testResponse.languageProfiles
+          ? schema.required(
+              intl.formatMessage(messages.validationLanguageProfileRequired)
+            )
+          : schema,
     }),
     externalUrl: Yup.string()
       .test(
@@ -410,15 +413,15 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       values.isAnime
                         ? messages.createAnimesonarr
                         : values.is4k
-                        ? messages.create4ksonarr
-                        : messages.createsonarr
+                          ? messages.create4ksonarr
+                          : messages.createsonarr
                     )
                   : intl.formatMessage(
                       values.isAnime
                         ? messages.editAnimesonarr
                         : values.is4k
-                        ? messages.edit4ksonarr
-                        : messages.editsonarr
+                          ? messages.edit4ksonarr
+                          : messages.editsonarr
                     )
               }
             >
@@ -429,8 +432,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       values.isAnime
                         ? messages.defaultAnimeserver
                         : values.is4k
-                        ? messages.default4kserver
-                        : messages.defaultserver
+                          ? messages.default4kserver
+                          : messages.defaultserver
                     )}
                   </label>
                   <div className="form-input-area">
@@ -1067,8 +1070,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                     className={`form-input-area ${
                       currentSettings.mediaServerType ===
                         MediaServerType.JELLYFIN ||
-                      currentSettings.mediaServerType ===
-                        MediaServerType.EMBY
+                      currentSettings.mediaServerType === MediaServerType.EMBY
                         ? 'opacity-50'
                         : 'opacity-100'
                     }`}
