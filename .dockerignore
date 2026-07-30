@@ -1,5 +1,15 @@
 **/*.md
 **/.gitkeep
+.pnpm-store
+.turbo
+.cache
+coverage
+playwright-report
+test-results
+*.log
+devenv.lock
+devenv.nix
+devenv.yaml
 **/.vscode
 .dockerignore
 .editorconfig
